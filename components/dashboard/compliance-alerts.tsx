@@ -2,7 +2,8 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { complianceAlerts } from "@/app/data/mock-data";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { AlertCircle, AlertTriangle, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -51,14 +52,15 @@ export function ComplianceAlerts({ className }: ComplianceAlertsProps) {
     }
   };
 
-  const formatDate = (date: Date) => {
+  const formatDate = (timestamp: number) => {
     return new Intl.DateTimeFormat("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
-    }).format(date);
+    }).format(new Date(timestamp));
   };
 
+  const complianceAlerts = useQuery(api.complianceAlerts.list) ?? [];
   const topAlerts = complianceAlerts.slice(0, 2);
 
   const getSeverityColor = (severity: string) => {
@@ -82,7 +84,7 @@ export function ComplianceAlerts({ className }: ComplianceAlertsProps) {
       <CardContent className="flex-1 flex flex-col space-y-3 min-h-0">
         {topAlerts.map((alert) => (
           <div
-            key={alert.id}
+            key={alert._id}
             className={`alert-border border p-3 space-y-1.5 hover:bg-muted/30 transition-colors ${getSeverityColor(alert.severity)}`}
           >
             <div className="flex items-start gap-3">
