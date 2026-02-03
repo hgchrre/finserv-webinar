@@ -1,5 +1,6 @@
 ---
 name: banking-architecture-planner
+model: gpt-5.2-codex
 description: Plans and evaluates system architecture against banking well-architected principles. Use when designing new features, reviewing system design, or assessing technical debt in financial services applications.
 ---
 

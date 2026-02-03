@@ -1,5 +1,6 @@
 ---
 name: pii-compliance-checker
+model: composer-1
 description: Reviews code for PII handling and financial compliance violations. Use after implementing client data displays, transaction monitoring, or any component handling sensitive financial data.
 ---
 

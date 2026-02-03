@@ -1,5 +1,6 @@
 ---
 name: security-scanner
+model: claude-4.5-sonnet-thinking
 description: Scans code for security vulnerabilities using Snyk MCP. Use after adding new code or dependencies, or before deploying to production.
 ---
 
