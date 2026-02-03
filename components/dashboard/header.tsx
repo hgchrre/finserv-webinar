@@ -1,9 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Database } from "lucide-react";
 
 export function DashboardHeader() {
+  const seedDatabase = useMutation(api.seed.seed);
+  const [isSeeding, setIsSeeding] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [marketStatus, setMarketStatus] = useState<"OPEN" | "CLOSED">("OPEN");
   const [minuteChanged, setMinuteChanged] = useState(false);
@@ -44,6 +50,18 @@ export function DashboardHeader() {
     return `${day} ${month} ${hours}:${minutes}`;
   };
 
+  const handleSeed = async () => {
+    setIsSeeding(true);
+    try {
+      await seedDatabase({});
+      // Small delay to show feedback
+      setTimeout(() => setIsSeeding(false), 1000);
+    } catch (error) {
+      console.error("Failed to seed database:", error);
+      setIsSeeding(false);
+    }
+  };
+
   return (
     <header className="border-b border-border bg-card px-6 py-3.5">
       <div className="flex items-center justify-between">
@@ -72,6 +90,16 @@ export function DashboardHeader() {
           </div>
         </div>
         <div className="flex items-center gap-4">
+          <Button
+            onClick={handleSeed}
+            disabled={isSeeding}
+            variant="outline"
+            size="sm"
+            className="font-mono text-xs h-8 border-border hover:bg-muted/30 rounded-none"
+          >
+            <Database className="h-3 w-3 mr-1.5" strokeWidth={2} />
+            {isSeeding ? "Seeding..." : "Seed Data"}
+          </Button>
           <div className="relative">
             <Input
               placeholder="Search… ⌘K"

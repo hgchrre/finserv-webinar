@@ -1,7 +1,6 @@
 import { DashboardHeader } from "@/components/dashboard/header";
 import { MarketTicker } from "@/components/dashboard/market-ticker";
 import { PortfolioCard } from "@/components/dashboard/portfolio-card";
-import { TransactionTable } from "@/components/dashboard/transaction-table";
 import { ComplianceAlerts } from "@/components/dashboard/compliance-alerts";
 import { RiskMetrics } from "@/components/dashboard/risk-metrics";
 import { MarketChart } from "@/components/dashboard/market-chart";
@@ -12,35 +11,39 @@ import { NewsFeed } from "@/components/dashboard/news-feed";
 
 export default function Home() {
   return (
-    <div className="h-screen bg-background text-foreground grid grid-rows-[auto_auto_1fr_auto_auto] gap-0.5 overflow-hidden p-1">
+    <div className="h-screen bg-background text-foreground flex flex-col overflow-hidden">
+      {/* Header - Fixed height */}
       <DashboardHeader />
+      
+      {/* Market Ticker - Fixed height */}
       <MarketTicker />
       
-      {/* Main dashboard grid - Bloomberg-style dense layout */}
-      <main className="grid grid-cols-4 grid-rows-2 gap-1 min-h-0">
-        {/* Left column: Watchlist spans both rows */}
-        <WatchlistTable className="row-span-2 panel-reveal panel-reveal-delay-1" />
-        
-        {/* Middle columns: Stacked panels */}
-        <MacroIndicators className="panel-reveal panel-reveal-delay-2" />
-        <SectorHeatmap className="panel-reveal panel-reveal-delay-3" />
-        
-        {/* Right column: Main chart spans both rows */}
-        <MarketChart className="row-span-2 panel-reveal panel-reveal-delay-4" />
-        
-        {/* Second row middle panels */}
-        <PortfolioCard className="panel-reveal panel-reveal-delay-5" />
-        <div className="grid grid-rows-2 gap-1">
-          <RiskMetrics className="panel-reveal panel-reveal-delay-6" />
-          <ComplianceAlerts className="panel-reveal panel-reveal-delay-7" />
+      {/* Main content - Fills remaining space */}
+      <div className="flex-1 flex flex-col gap-1 p-1 min-h-0">
+        {/* Top row: 3 columns */}
+        <div className="flex gap-1 flex-[0_0_42%]">
+          <WatchlistTable className="flex-1 min-w-0" />
+          <MacroIndicators className="flex-1 min-w-0" />
+          <MarketChart className="flex-1 min-w-0" />
         </div>
-      </main>
+        
+        {/* Middle row: 3 columns */}
+        <div className="flex gap-1 flex-[0_0_29%]">
+          <SectorHeatmap className="flex-1 min-w-0" />
+          <PortfolioCard className="flex-1 min-w-0" />
+          <RiskMetrics className="flex-1 min-w-0" />
+        </div>
+        
+        {/* Bottom row: Compliance (full width) */}
+        <div className="flex gap-1 flex-[0_0_29%]">
+          <ComplianceAlerts className="flex-1 min-w-0" />
+        </div>
+      </div>
       
-      {/* News ticker */}
-      <NewsFeed className="panel-reveal panel-reveal-delay-8" />
-      
-      {/* Transactions table */}
-      <TransactionTable className="panel-reveal panel-reveal-delay-9 max-h-48" />
+      {/* News Ticker - Full width at bottom - Fixed height */}
+      <div className="shrink-0">
+        <NewsFeed />
+      </div>
     </div>
   );
 }

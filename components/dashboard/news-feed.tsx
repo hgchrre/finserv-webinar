@@ -29,49 +29,55 @@ export function NewsFeed({ className }: NewsFeedProps) {
       </div>
       
       <div className="overflow-hidden">
-        <div className="flex items-center gap-5 px-3 py-2.5 animate-scroll whitespace-nowrap">
-          {news?.map((item, idx) => (
-            <div key={item._id} className="flex items-center gap-3 text-xs">
-              {idx > 0 && (
+        {news && news.length > 0 ? (
+          <div className="flex items-center gap-5 px-3 py-2.5 animate-scroll whitespace-nowrap">
+            {news.map((item, idx) => (
+              <div key={item._id} className="flex items-center gap-3 text-xs">
+                {idx > 0 && (
+                  <span className="text-border text-muted-foreground/20 font-mono">│</span>
+                )}
+                <span className="text-primary font-medium uppercase">
+                  {item.source}
+                </span>
+                <span className="text-foreground/90">
+                  {item.title}
+                </span>
+                <span className="text-muted-foreground font-mono">
+                  {formatTime(item.publishedAt)}
+                </span>
+                {item.relatedSymbols && item.relatedSymbols.length > 0 && (
+                  <span className="text-primary/60 font-mono text-xs">
+                    [{item.relatedSymbols.slice(0, 2).join(", ")}]
+                  </span>
+                )}
+              </div>
+            ))}
+            {/* Duplicate for seamless scroll */}
+            {news.map((item, idx) => (
+              <div key={`dup-${item._id}`} className="flex items-center gap-3 text-xs">
                 <span className="text-border text-muted-foreground/20 font-mono">│</span>
-              )}
-              <span className="text-primary font-medium uppercase">
-                {item.source}
-              </span>
-              <span className="text-foreground/90">
-                {item.title}
-              </span>
-              <span className="text-muted-foreground font-mono">
-                {formatTime(item.publishedAt)}
-              </span>
-              {item.relatedSymbols && item.relatedSymbols.length > 0 && (
-                <span className="text-primary/60 font-mono text-xs">
-                  [{item.relatedSymbols.slice(0, 2).join(", ")}]
+                <span className="text-primary font-medium uppercase">
+                  {item.source}
                 </span>
-              )}
-            </div>
-          ))}
-          {/* Duplicate for seamless scroll */}
-          {news?.map((item, idx) => (
-            <div key={`dup-${item._id}`} className="flex items-center gap-3 text-xs">
-              <span className="text-border text-muted-foreground/20 font-mono">│</span>
-              <span className="text-primary font-medium uppercase">
-                {item.source}
-              </span>
-              <span className="text-foreground/90">
-                {item.title}
-              </span>
-              <span className="text-muted-foreground font-mono">
-                {formatTime(item.publishedAt)}
-              </span>
-              {item.relatedSymbols && item.relatedSymbols.length > 0 && (
-                <span className="text-primary/60 font-mono text-xs">
-                  [{item.relatedSymbols.slice(0, 2).join(", ")}]
+                <span className="text-foreground/90">
+                  {item.title}
                 </span>
-              )}
-            </div>
-          ))}
-        </div>
+                <span className="text-muted-foreground font-mono">
+                  {formatTime(item.publishedAt)}
+                </span>
+                {item.relatedSymbols && item.relatedSymbols.length > 0 && (
+                  <span className="text-primary/60 font-mono text-xs">
+                    [{item.relatedSymbols.slice(0, 2).join(", ")}]
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="px-3 py-2.5 text-center text-muted-foreground text-xs">
+            {news === undefined ? "Loading..." : "No news available"}
+          </div>
+        )}
       </div>
     </div>
   );

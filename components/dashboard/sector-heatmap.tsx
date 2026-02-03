@@ -45,26 +45,32 @@ export function SectorHeatmap({ className }: SectorHeatmapProps) {
       </div>
       
       <div className="flex-1 overflow-auto min-h-0 p-1">
-        <div className="grid grid-cols-3 gap-1 h-full">
-          {sortedSectors?.map((sector) => (
-            <div
-              key={sector.sector}
-              className="border border-border p-2 flex flex-col justify-between hover:border-border transition-colors"
-              style={{ backgroundColor: getHeatColor(sector.changePercent) }}
-            >
-              <div className="text-xs text-foreground/80 uppercase tracking-wider leading-tight">
-                {sector.sector}
+        {sortedSectors && sortedSectors.length > 0 ? (
+          <div className="grid grid-cols-3 gap-1 h-full">
+            {sortedSectors.map((sector) => (
+              <div
+                key={sector.sector}
+                className="border border-border p-2 flex flex-col justify-between hover:border-border transition-colors"
+                style={{ backgroundColor: getHeatColor(sector.changePercent) }}
+              >
+                <div className="text-xs text-foreground/80 uppercase tracking-wider leading-tight">
+                  {sector.sector}
+                </div>
+                <div className={cn(
+                  "font-mono text-sm font-bold tabular-nums",
+                  getTextColor(sector.changePercent),
+                  sector.changePercent > 0 ? "glow-gain" : sector.changePercent < 0 ? "glow-loss" : ""
+                )}>
+                  {sector.changePercent > 0 ? "+" : ""}{sector.changePercent.toFixed(2)}%
+                </div>
               </div>
-              <div className={cn(
-                "font-mono text-sm font-bold tabular-nums",
-                getTextColor(sector.changePercent),
-                sector.changePercent > 0 ? "glow-gain" : sector.changePercent < 0 ? "glow-loss" : ""
-              )}>
-                {sector.changePercent > 0 ? "+" : ""}{sector.changePercent.toFixed(2)}%
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex items-center justify-center h-full text-muted-foreground text-xs">
+            {sectors === undefined ? "Loading..." : "No sector data"}
+          </div>
+        )}
       </div>
     </div>
   );
