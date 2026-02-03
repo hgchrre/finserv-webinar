@@ -84,8 +84,31 @@ export default defineSchema({
       })
     ),
   }),
+  clients: defineTable({
+    name: v.string(),
+    tin: v.string(),              // Tax ID Number (will be masked in UI)
+    entityType: v.union(
+      v.literal("corporation"), 
+      v.literal("llc"), 
+      v.literal("individual")
+    ),
+    address: v.object({
+      street: v.string(),
+      city: v.string(),
+      state: v.optional(v.string()),
+      country: v.string(),
+    }),
+    riskRating: v.union(
+      v.literal("low"), 
+      v.literal("medium"), 
+      v.literal("high")
+    ),
+    relationshipManager: v.string(),
+    onboardedAt: v.number(),       // Unix timestamp
+  }).index("by_name", ["name"]),
   transactions: defineTable({
-    client: v.string(),
+    clientId: v.optional(v.id("clients")),     // Link to clients table
+    client: v.string(),             // Keep for backwards compat
     type: v.union(v.literal("buy"), v.literal("sell"), v.literal("transfer")),
     amount: v.number(),
     status: v.union(
@@ -95,6 +118,32 @@ export default defineSchema({
     ),
     timestamp: v.number(), // Unix timestamp
     isCrossBorder: v.boolean(),
+    destinationCountry: v.optional(v.string()), // For cross-border txns
+    accountNumber: v.optional(v.string()),      // Will be masked in UI
+  }),
+  sarDrafts: defineTable({
+    transactionId: v.id("transactions"),
+    clientId: v.id("clients"),
+    narrative: v.string(),         // AI-generated narrative
+    status: v.union(
+      v.literal("draft"), 
+      v.literal("pending_review"), 
+      v.literal("submitted")
+    ),
+    generatedBy: v.string(),       // User who generated it
+    generatedAt: v.number(),       // Unix timestamp
+    reviewedBy: v.optional(v.string()),
+    reviewedAt: v.optional(v.number()),
+    filingType: v.string(),        // "Initial Report", "Continuing Activity", etc.
+    riskFactors: v.array(v.string()),
+  }),
+  auditLog: defineTable({
+    action: v.string(),            // "viewed_client", "generated_sar", "exported_data"
+    userId: v.string(),
+    targetType: v.string(),        // "client", "transaction", "sar"
+    targetId: v.string(),
+    timestamp: v.number(),
+    metadata: v.optional(v.any()), // Additional context
   }),
   complianceAlerts: defineTable({
     client: v.string(),

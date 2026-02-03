@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { DashboardHeader } from "@/components/dashboard/header";
 import { MarketTicker } from "@/components/dashboard/market-ticker";
 import { PortfolioCard } from "@/components/dashboard/portfolio-card";
@@ -16,7 +17,9 @@ export default function Home() {
       <DashboardHeader />
       
       {/* Market Ticker - Fixed height */}
-      <MarketTicker />
+      <Suspense fallback={<div className="h-10 bg-card border-b border-border" />}>
+        <MarketTicker />
+      </Suspense>
       
       {/* Main content - Fills remaining space */}
       <div className="flex-1 flex flex-col gap-1 p-1 min-h-0">
@@ -24,14 +27,20 @@ export default function Home() {
         <div className="flex gap-1 flex-[0_0_42%]">
           <WatchlistTable className="flex-1 min-w-0" />
           <MacroIndicators className="flex-1 min-w-0" />
-          <MarketChart className="flex-1 min-w-0" />
+          <Suspense fallback={<div className="flex-1 min-w-0 bg-card" />}>
+            <MarketChart className="flex-1 min-w-0" />
+          </Suspense>
         </div>
         
         {/* Middle row: 3 columns */}
         <div className="flex gap-1 flex-[0_0_29%]">
           <SectorHeatmap className="flex-1 min-w-0" />
-          <PortfolioCard className="flex-1 min-w-0" />
-          <RiskMetrics className="flex-1 min-w-0" />
+          <Suspense fallback={<div className="flex-1 min-w-0 bg-card" />}>
+            <PortfolioCard className="flex-1 min-w-0" />
+          </Suspense>
+          <Suspense fallback={<div className="flex-1 min-w-0 bg-card" />}>
+            <RiskMetrics className="flex-1 min-w-0" />
+          </Suspense>
         </div>
         
         {/* Bottom row: Compliance (full width) */}
@@ -42,7 +51,9 @@ export default function Home() {
       
       {/* News Ticker - Full width at bottom - Fixed height */}
       <div className="shrink-0">
-        <NewsFeed />
+        <Suspense fallback={<div className="h-24 bg-card border-t border-border" />}>
+          <NewsFeed />
+        </Suspense>
       </div>
     </div>
   );

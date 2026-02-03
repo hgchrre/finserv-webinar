@@ -1,17 +1,19 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { riskMetrics } from "@/app/data/mock-data";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  Tooltip,
-  Legend,
-} from "recharts";
 import { cn } from "@/lib/utils";
+
+const PieChart = dynamic(() => import("recharts").then((mod) => mod.PieChart), { ssr: false });
+const Pie = dynamic(() => import("recharts").then((mod) => mod.Pie), { ssr: false });
+const Cell = dynamic(() => import("recharts").then((mod) => mod.Cell), { ssr: false });
+const ResponsiveContainer = dynamic(
+  () => import("recharts").then((mod) => mod.ResponsiveContainer),
+  { ssr: false }
+);
+const Tooltip = dynamic(() => import("recharts").then((mod) => mod.Tooltip), { ssr: false });
 
 const COLORS = [
   "var(--chart-1)",
