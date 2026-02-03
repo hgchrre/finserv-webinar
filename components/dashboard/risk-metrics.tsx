@@ -11,6 +11,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import { cn } from "@/lib/utils";
 
 const COLORS = [
   "var(--chart-1)",
@@ -20,7 +21,11 @@ const COLORS = [
   "var(--chart-5)",
 ];
 
-export function RiskMetrics() {
+interface RiskMetricsProps {
+  className?: string;
+}
+
+export function RiskMetrics({ className }: RiskMetricsProps) {
   const formatCurrency = (value: number) => {
     if (value >= 1000000) {
       return `$${(value / 1000000).toFixed(1)}M`;
@@ -42,14 +47,14 @@ export function RiskMetrics() {
   const aggregateVaR = riskMetrics.reduce((sum, m) => sum + m.var, 0);
 
   return (
-    <Card className="h-full flex flex-col min-h-0 panel-border rounded-none">
+    <Card className={cn("h-full flex flex-col min-h-0 panel-border rounded-none", className)}>
       <CardHeader>
         <CardTitle className="text-xs font-sans tracking-[0.1em] uppercase text-muted-foreground">
           RISK METRICS
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 flex flex-col space-y-5 min-h-0">
-        <div className="h-28 flex-shrink-0 relative flex items-center justify-center">
+      <CardContent className="flex-1 flex flex-col space-y-4 min-h-0">
+        <div className="h-24 flex-shrink-0 relative flex items-center justify-center">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
@@ -58,8 +63,8 @@ export function RiskMetrics() {
                 cy="50%"
                 labelLine={false}
                 label={false}
-                outerRadius={48}
-                innerRadius={38}
+                outerRadius={44}
+                innerRadius={36}
                 fill="#8884d8"
                 dataKey="value"
               >
@@ -86,12 +91,12 @@ export function RiskMetrics() {
           </ResponsiveContainer>
         </div>
 
-        <div className="space-y-4 flex-1 min-h-0">
+        <div className="space-y-3 flex-1 min-h-0">
           {topSectors.map((metric) => {
             const percentage = (metric.exposure / metric.limit) * 100;
             const isNearLimit = percentage > 80;
             return (
-              <div key={metric.sector} className="space-y-2">
+              <div key={metric.sector} className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground font-sans uppercase tracking-wider text-xs">
                     {metric.sector}
@@ -106,7 +111,7 @@ export function RiskMetrics() {
                 </div>
                 <div className="h-1.5 bg-muted/30 overflow-hidden">
                   <div
-                    className={`h-full transition-all duration-500 ${
+                    className={`h-full transition-[width] duration-500 ${
                       isNearLimit ? "bg-yellow-500" : "bg-primary"
                     }`}
                     style={{ width: `${percentage}%` }}
@@ -117,7 +122,7 @@ export function RiskMetrics() {
           })}
         </div>
 
-        <div className="pt-4 border-t border-border flex-shrink-0">
+        <div className="pt-3 border-t border-border flex-shrink-0">
           <div className="flex items-center justify-between">
             <span className="text-xs font-sans tracking-[0.1em] uppercase text-muted-foreground">
               VaR (95%)

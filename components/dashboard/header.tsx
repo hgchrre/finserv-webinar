@@ -38,20 +38,20 @@ export function DashboardHeader() {
 
   const formatTime = (date: Date) => {
     const day = date.getDate().toString().padStart(2, "0");
-    const month = date.toLocaleString("en-US", { month: "short" }).toUpperCase();
+    const month = new Intl.DateTimeFormat("en-US", { month: "short" }).format(date).toUpperCase();
     const hours = date.getHours().toString().padStart(2, "0");
     const minutes = date.getMinutes().toString().padStart(2, "0");
     return `${day} ${month} ${hours}:${minutes}`;
   };
 
   return (
-    <header className="border-b border-border bg-card px-6 py-4">
+    <header className="border-b border-border bg-card px-6 py-3.5">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-6">
           <h1 className="text-lg font-bold tracking-[0.15em] text-foreground font-sans uppercase">
-            CURSOR TERMINAL
+            CURSOR COMMAND CENTER
           </h1>
-          <div className="flex items-center gap-5 text-sm text-muted-foreground">
+          <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <span className={`font-mono tabular-nums transition-opacity ${minuteChanged ? 'opacity-60' : ''}`}>
               {formatTime(currentTime)}
             </span>
@@ -71,10 +71,12 @@ export function DashboardHeader() {
             </span>
           </div>
         </div>
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-4">
           <div className="relative">
             <Input
               placeholder="Search… ⌘K"
+              name="search"
+              autoComplete="off"
               className="w-52 font-mono text-sm h-9 bg-input border-border focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
               aria-label="Search"
             />

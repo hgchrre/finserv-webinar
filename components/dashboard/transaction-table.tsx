@@ -12,8 +12,13 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { transactions } from "@/app/data/mock-data";
 import { Globe, AlertTriangle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-export function TransactionTable() {
+interface TransactionTableProps {
+  className?: string;
+}
+
+export function TransactionTable({ className }: TransactionTableProps) {
   const formatCurrency = (value: number) => {
     if (value >= 1000000) {
       return `$${(value / 1000000).toFixed(1)}M`;
@@ -47,7 +52,7 @@ export function TransactionTable() {
   const recentTransactions = transactions.slice(0, 5);
 
   return (
-    <Card className="h-full flex flex-col min-h-0 panel-border rounded-none">
+    <Card className={cn("h-full flex flex-col min-h-0 panel-border rounded-none", className)}>
       <CardHeader>
         <CardTitle className="text-xs font-sans tracking-[0.1em] uppercase text-muted-foreground">
           TRANSACTIONS
@@ -58,16 +63,16 @@ export function TransactionTable() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="font-sans text-xs text-muted-foreground h-10 py-3 uppercase tracking-wider">
+                <TableHead className="font-sans text-xs text-muted-foreground h-10 py-2.5 uppercase tracking-wider">
                   Client
                 </TableHead>
-                <TableHead className="font-sans text-xs text-muted-foreground h-10 py-3 uppercase tracking-wider">
+                <TableHead className="font-sans text-xs text-muted-foreground h-10 py-2.5 uppercase tracking-wider">
                   Type
                 </TableHead>
-                <TableHead className="font-sans text-xs text-muted-foreground text-right h-10 py-3 uppercase tracking-wider">
+                <TableHead className="font-sans text-xs text-muted-foreground text-right h-10 py-2.5 uppercase tracking-wider">
                   Amount
                 </TableHead>
-                <TableHead className="font-sans text-xs text-muted-foreground h-10 py-3 uppercase tracking-wider">
+                <TableHead className="font-sans text-xs text-muted-foreground h-10 py-2.5 uppercase tracking-wider">
                   Status
                 </TableHead>
               </TableRow>
@@ -76,14 +81,14 @@ export function TransactionTable() {
               {recentTransactions.map((txn, idx) => (
                 <TableRow 
                   key={txn.id} 
-                  className="h-12 hover:bg-muted/30 transition-colors group focus-visible:bg-muted/20"
+                  className="h-11 hover:bg-muted/30 transition-colors group focus-visible:bg-muted/20"
                   tabIndex={0}
                   role="row"
                 >
-                  <TableCell className="font-mono text-sm py-3 tabular-nums">
+                  <TableCell className="font-mono text-xs py-2.5 tabular-nums">
                     {txn.client}
                   </TableCell>
-                  <TableCell className="py-3">
+                  <TableCell className="py-2.5">
                     <div className="flex items-center gap-2">
                       <span className="font-sans text-xs uppercase tracking-wider text-muted-foreground">
                         {txn.type}
@@ -93,10 +98,10 @@ export function TransactionTable() {
                       )}
                     </div>
                   </TableCell>
-                  <TableCell className="font-mono text-sm text-right py-3 tabular-nums">
+                  <TableCell className="font-mono text-xs text-right py-2.5 tabular-nums">
                     {formatCurrency(txn.amount)}
                   </TableCell>
-                  <TableCell className="py-3">
+                  <TableCell className="py-2.5">
                     {getStatusBadge(txn.status, txn.amount)}
                   </TableCell>
                 </TableRow>

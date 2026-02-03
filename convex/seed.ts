@@ -3,68 +3,155 @@ import { mutation } from "./_generated/server";
 export const seed = mutation({
   args: {},
   handler: async (ctx) => {
-    // Clear existing data
-    const existingIndices = await ctx.db.query("marketIndices").collect();
-    for (const index of existingIndices) {
-      await ctx.db.delete(index._id);
-    }
+    // Clear all existing data
+    const tables = [
+      "marketIndices",
+      "portfolio",
+      "transactions",
+      "complianceAlerts",
+      "riskMetrics",
+      "marketChartData",
+      "securities",
+      "commodities",
+      "currencies",
+      "crypto",
+      "news",
+      "sectorPerformance",
+    ] as const;
 
-    const existingPortfolio = await ctx.db.query("portfolio").collect();
-    for (const p of existingPortfolio) {
-      await ctx.db.delete(p._id);
-    }
-
-    const existingTransactions = await ctx.db.query("transactions").collect();
-    for (const txn of existingTransactions) {
-      await ctx.db.delete(txn._id);
-    }
-
-    const existingAlerts = await ctx.db.query("complianceAlerts").collect();
-    for (const alert of existingAlerts) {
-      await ctx.db.delete(alert._id);
-    }
-
-    const existingRisk = await ctx.db.query("riskMetrics").collect();
-    for (const risk of existingRisk) {
-      await ctx.db.delete(risk._id);
-    }
-
-    const existingChart = await ctx.db.query("marketChartData").collect();
-    for (const chart of existingChart) {
-      await ctx.db.delete(chart._id);
+    for (const table of tables) {
+      const existing = await ctx.db.query(table).collect();
+      for (const item of existing) {
+        await ctx.db.delete(item._id);
+      }
     }
 
     // Seed market indices
     await ctx.db.insert("marketIndices", {
       name: "S&P 500",
-      value: 4927.11,
-      change: 40.2,
-      changePercent: 0.82,
+      symbol: "^GSPC",
+      value: 6012.45,
+      change: 28.73,
+      changePercent: 0.48,
     });
     await ctx.db.insert("marketIndices", {
       name: "NASDAQ",
-      value: 15628.04,
-      change: -18.7,
-      changePercent: -0.12,
+      symbol: "^IXIC",
+      value: 19478.32,
+      change: -42.18,
+      changePercent: -0.22,
     });
     await ctx.db.insert("marketIndices", {
       name: "DOW",
-      value: 38450.23,
-      change: 125.4,
-      changePercent: 0.33,
+      symbol: "^DJI",
+      value: 44421.91,
+      change: 156.82,
+      changePercent: 0.35,
     });
     await ctx.db.insert("marketIndices", {
       name: "VIX",
-      value: 13.45,
-      change: -0.8,
-      changePercent: -5.62,
+      symbol: "^VIX",
+      value: 15.23,
+      change: -0.92,
+      changePercent: -5.70,
     });
     await ctx.db.insert("marketIndices", {
-      name: "10Y Treasury",
-      value: 4.12,
-      change: 0.03,
-      changePercent: 0.73,
+      name: "10Y",
+      symbol: "^TNX",
+      value: 4.54,
+      change: 0.02,
+      changePercent: 0.44,
     });
+
+    // Seed securities (watchlist)
+    const securities = [
+      { symbol: "AAPL", name: "Apple Inc", price: 227.63, change: 2.41, changePercent: 1.07, volume: 52340000, marketCap: 3420000000000 },
+      { symbol: "MSFT", name: "Microsoft Corp", price: 415.28, change: -3.12, changePercent: -0.75, volume: 21560000, marketCap: 3090000000000 },
+      { symbol: "GOOGL", name: "Alphabet Inc", price: 188.42, change: 1.87, changePercent: 1.00, volume: 18920000, marketCap: 2340000000000 },
+      { symbol: "AMZN", name: "Amazon.com Inc", price: 225.94, change: 4.23, changePercent: 1.91, volume: 38450000, marketCap: 2380000000000 },
+      { symbol: "NVDA", name: "NVIDIA Corp", price: 878.35, change: -12.45, changePercent: -1.40, volume: 42180000, marketCap: 2160000000000 },
+      { symbol: "META", name: "Meta Platforms", price: 612.78, change: 8.92, changePercent: 1.48, volume: 14320000, marketCap: 1560000000000 },
+      { symbol: "TSLA", name: "Tesla Inc", price: 394.52, change: -8.34, changePercent: -2.07, volume: 98450000, marketCap: 1260000000000 },
+      { symbol: "JPM", name: "JPMorgan Chase", price: 242.18, change: 1.56, changePercent: 0.65, volume: 8920000, marketCap: 698000000000 },
+      { symbol: "V", name: "Visa Inc", price: 318.45, change: 2.78, changePercent: 0.88, volume: 6540000, marketCap: 642000000000 },
+      { symbol: "UNH", name: "UnitedHealth", price: 528.92, change: -4.21, changePercent: -0.79, volume: 3210000, marketCap: 486000000000 },
+      { symbol: "XOM", name: "Exxon Mobil", price: 108.34, change: 0.92, changePercent: 0.86, volume: 14560000, marketCap: 456000000000 },
+      { symbol: "JNJ", name: "Johnson & Johnson", price: 152.67, change: -0.45, changePercent: -0.29, volume: 7890000, marketCap: 368000000000 },
+    ];
+
+    for (const sec of securities) {
+      await ctx.db.insert("securities", { ...sec, lastUpdated: Date.now() });
+    }
+
+    // Seed commodities
+    const commodities = [
+      { symbol: "GC=F", name: "Gold", price: 2935.40, change: 18.20, changePercent: 0.62 },
+      { symbol: "CL=F", name: "Crude Oil", price: 72.84, change: -0.92, changePercent: -1.25 },
+      { symbol: "SI=F", name: "Silver", price: 32.45, change: 0.38, changePercent: 1.18 },
+      { symbol: "NG=F", name: "Natural Gas", price: 3.12, change: 0.08, changePercent: 2.63 },
+    ];
+
+    for (const comm of commodities) {
+      await ctx.db.insert("commodities", { ...comm, lastUpdated: Date.now() });
+    }
+
+    // Seed currencies
+    const currencies = [
+      { pair: "EUR/USD", rate: 1.0342, change: -0.0018, changePercent: -0.17 },
+      { pair: "GBP/USD", rate: 1.2418, change: 0.0032, changePercent: 0.26 },
+      { pair: "USD/JPY", rate: 154.82, change: 0.45, changePercent: 0.29 },
+      { pair: "USD/CAD", rate: 1.4312, change: -0.0028, changePercent: -0.20 },
+    ];
+
+    for (const curr of currencies) {
+      await ctx.db.insert("currencies", { ...curr, lastUpdated: Date.now() });
+    }
+
+    // Seed crypto
+    const crypto = [
+      { symbol: "BTC", name: "Bitcoin", price: 102450.00, change: 1820.00, changePercent: 1.81, marketCap: 2020000000000 },
+      { symbol: "ETH", name: "Ethereum", price: 3245.80, change: -48.20, changePercent: -1.46, marketCap: 390000000000 },
+      { symbol: "SOL", name: "Solana", price: 218.45, change: 12.30, changePercent: 5.97, marketCap: 102000000000 },
+    ];
+
+    for (const c of crypto) {
+      await ctx.db.insert("crypto", { ...c, lastUpdated: Date.now() });
+    }
+
+    // Seed sector performance (11 GICS sectors)
+    const sectors = [
+      { sector: "Technology", changePercent: 1.24 },
+      { sector: "Healthcare", changePercent: -0.38 },
+      { sector: "Financials", changePercent: 0.82 },
+      { sector: "Consumer Disc", changePercent: 0.56 },
+      { sector: "Communication", changePercent: 1.02 },
+      { sector: "Industrials", changePercent: 0.34 },
+      { sector: "Consumer Staples", changePercent: -0.12 },
+      { sector: "Energy", changePercent: -0.78 },
+      { sector: "Utilities", changePercent: 0.18 },
+      { sector: "Real Estate", changePercent: -0.45 },
+      { sector: "Materials", changePercent: 0.28 },
+    ];
+
+    for (const sec of sectors) {
+      await ctx.db.insert("sectorPerformance", { ...sec, lastUpdated: Date.now() });
+    }
+
+    // Seed news
+    const newsItems = [
+      { title: "Fed signals potential rate cuts in March meeting minutes", source: "Reuters", url: "#", publishedAt: Date.now() - 1800000, relatedSymbols: ["^GSPC", "^TNX"] },
+      { title: "NVIDIA beats earnings expectations, guidance strong", source: "Bloomberg", url: "#", publishedAt: Date.now() - 3600000, relatedSymbols: ["NVDA"] },
+      { title: "Apple announces new AI features for iPhone 17", source: "CNBC", url: "#", publishedAt: Date.now() - 7200000, relatedSymbols: ["AAPL"] },
+      { title: "Oil prices fall on inventory build concerns", source: "WSJ", url: "#", publishedAt: Date.now() - 10800000, relatedSymbols: ["CL=F", "XOM"] },
+      { title: "Bitcoin ETF sees record inflows as price nears $105K", source: "CoinDesk", url: "#", publishedAt: Date.now() - 14400000, relatedSymbols: ["BTC"] },
+      { title: "Treasury yields rise on strong jobs data", source: "FT", url: "#", publishedAt: Date.now() - 18000000, relatedSymbols: ["^TNX"] },
+      { title: "Meta launches new AR glasses, stock jumps 2%", source: "TechCrunch", url: "#", publishedAt: Date.now() - 21600000, relatedSymbols: ["META"] },
+      { title: "European markets close higher on ECB comments", source: "Reuters", url: "#", publishedAt: Date.now() - 25200000 },
+    ];
+
+    for (const news of newsItems) {
+      await ctx.db.insert("news", news);
+    }
 
     // Seed portfolio
     await ctx.db.insert("portfolio", {

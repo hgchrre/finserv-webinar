@@ -1,0 +1,39 @@
+import { query, mutation } from "./_generated/server";
+import { v } from "convex/values";
+
+export const list = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query("crypto").collect();
+  },
+});
+
+export const upsert = mutation({
+  args: {
+    symbol: v.string(),
+    name: v.string(),
+    price: v.number(),
+    change: v.number(),
+    changePercent: v.number(),
+    marketCap: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const existing = await ctx.db
+      .query("crypto")
+      .withIndex("by_symbol", (q) => q.eq("symbol", args.symbol))
+      .first();
+
+    if (existing) {
+      await ctx.db.patch(existing._id, {
+        ...args,
+        lastUpdated: Date.now(),
+      });
+      return existing._id;
+    }
+
+    return await ctx.db.insert("crypto", {
+      ...args,
+      lastUpdated: Date.now(),
+    });
+  },
+});

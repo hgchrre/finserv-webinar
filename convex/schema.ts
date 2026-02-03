@@ -4,9 +4,68 @@ import { v } from "convex/values";
 export default defineSchema({
   marketIndices: defineTable({
     name: v.string(),
+    symbol: v.optional(v.string()),
     value: v.number(),
     change: v.number(),
     changePercent: v.number(),
+  }),
+  
+  // Individual securities (stocks/ETFs)
+  securities: defineTable({
+    symbol: v.string(),
+    name: v.string(),
+    price: v.number(),
+    change: v.number(),
+    changePercent: v.number(),
+    volume: v.number(),
+    marketCap: v.optional(v.number()),
+    lastUpdated: v.number(),
+  }).index("by_symbol", ["symbol"]),
+  
+  // Commodities (Gold, Oil, etc.)
+  commodities: defineTable({
+    symbol: v.string(),
+    name: v.string(),
+    price: v.number(),
+    change: v.number(),
+    changePercent: v.number(),
+    lastUpdated: v.number(),
+  }).index("by_symbol", ["symbol"]),
+  
+  // Currency pairs
+  currencies: defineTable({
+    pair: v.string(),
+    rate: v.number(),
+    change: v.number(),
+    changePercent: v.number(),
+    lastUpdated: v.number(),
+  }).index("by_pair", ["pair"]),
+  
+  // Crypto
+  crypto: defineTable({
+    symbol: v.string(),
+    name: v.string(),
+    price: v.number(),
+    change: v.number(),
+    changePercent: v.number(),
+    marketCap: v.number(),
+    lastUpdated: v.number(),
+  }).index("by_symbol", ["symbol"]),
+  
+  // News headlines
+  news: defineTable({
+    title: v.string(),
+    source: v.string(),
+    url: v.string(),
+    publishedAt: v.number(),
+    relatedSymbols: v.optional(v.array(v.string())),
+  }),
+  
+  // Sector performance (11 GICS sectors)
+  sectorPerformance: defineTable({
+    sector: v.string(),
+    changePercent: v.number(),
+    lastUpdated: v.number(),
   }),
   portfolio: defineTable({
     totalAUM: v.number(),

@@ -4,8 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { complianceAlerts } from "@/app/data/mock-data";
 import { AlertCircle, AlertTriangle, Info } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-export function ComplianceAlerts() {
+interface ComplianceAlertsProps {
+  className?: string;
+}
+
+export function ComplianceAlerts({ className }: ComplianceAlertsProps) {
   const getSeverityIcon = (severity: string) => {
     switch (severity) {
       case "critical":
@@ -47,11 +52,11 @@ export function ComplianceAlerts() {
   };
 
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString("en-US", {
+    return new Intl.DateTimeFormat("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
-    });
+    }).format(date);
   };
 
   const topAlerts = complianceAlerts.slice(0, 2);
@@ -68,17 +73,17 @@ export function ComplianceAlerts() {
   };
 
   return (
-    <Card className="h-full flex flex-col min-h-0 panel-border rounded-none">
+    <Card className={cn("h-full flex flex-col min-h-0 panel-border rounded-none", className)}>
       <CardHeader>
         <CardTitle className="text-xs font-sans tracking-[0.1em] uppercase text-muted-foreground">
           COMPLIANCE
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 flex flex-col space-y-4 min-h-0">
+      <CardContent className="flex-1 flex flex-col space-y-3 min-h-0">
         {topAlerts.map((alert) => (
           <div
             key={alert.id}
-            className={`alert-border border p-4 space-y-2 hover:bg-muted/30 transition-colors ${getSeverityColor(alert.severity)}`}
+            className={`alert-border border p-3 space-y-1.5 hover:bg-muted/30 transition-colors ${getSeverityColor(alert.severity)}`}
           >
             <div className="flex items-start gap-3">
               <div className="flex-shrink-0 mt-0.5">{getSeverityIcon(alert.severity)}</div>
@@ -92,7 +97,7 @@ export function ComplianceAlerts() {
                 <div className="text-xs text-muted-foreground font-sans mb-1.5 uppercase tracking-wider">
                   {alert.type}
                 </div>
-                <div className="text-sm text-foreground line-clamp-2 leading-relaxed">
+                <div className="text-xs text-foreground line-clamp-2 leading-relaxed">
                   {alert.message}
                 </div>
                 {alert.dueDate && (

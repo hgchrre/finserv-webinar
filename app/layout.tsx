@@ -15,7 +15,7 @@ const cousine = Cousine({
 });
 
 export const metadata: Metadata = {
-  title: "Cursor Terminal - Institutional Banker Dashboard",
+  title: "Cursor Command Center - Institutional Banker Dashboard",
   description: "Bloomberg terminal-inspired dashboard for institutional investment tracking",
 };
 

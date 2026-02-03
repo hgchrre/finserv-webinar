@@ -15,10 +15,15 @@ import {
   Bar,
   ComposedChart,
 } from "recharts";
+import { cn } from "@/lib/utils";
 
 type TimeRange = "1D" | "1W" | "1M" | "3M" | "YTD" | "1Y";
 
-export function MarketChart() {
+interface MarketChartProps {
+  className?: string;
+}
+
+export function MarketChart({ className }: MarketChartProps) {
   const [timeRange, setTimeRange] = useState<TimeRange>("1M");
 
   const getFilteredData = () => {
@@ -54,10 +59,10 @@ export function MarketChart() {
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString("en-US", {
+    return new Intl.DateTimeFormat("en-US", {
       month: "short",
       day: "numeric",
-    });
+    }).format(date);
   };
 
   const data = getFilteredData();
@@ -71,9 +76,9 @@ export function MarketChart() {
   const range = maxValue - minValue;
 
   return (
-    <Card className="h-full flex flex-col min-h-0 panel-border rounded-none">
-      <CardHeader className="border-b border-border pb-5">
-        <div className="flex items-center justify-between mb-4">
+    <Card className={cn("h-full flex flex-col min-h-0 panel-border rounded-none", className)}>
+      <CardHeader className="border-b border-border">
+        <div className="flex items-center justify-between mb-3">
           <CardTitle className="text-xs font-sans tracking-[0.1em] uppercase text-muted-foreground">
             MARKET PERFORMANCE
           </CardTitle>
@@ -105,7 +110,7 @@ export function MarketChart() {
             <span className="text-2xl font-bold font-mono tabular-nums">
               {latestValue.toFixed(2)}
             </span>
-            <span className={`flex items-center gap-1 text-sm font-mono tabular-nums ${isPositive ? "text-gain" : "text-loss"}`}>
+            <span className={`flex items-center gap-1 text-xs font-mono tabular-nums ${isPositive ? "text-gain glow-gain" : "text-loss glow-loss"}`}>
               {isPositive ? "+" : ""}{change.toFixed(2)} ({isPositive ? "+" : ""}{changePercent.toFixed(2)}%)
             </span>
           </div>
@@ -114,7 +119,7 @@ export function MarketChart() {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="flex-1 min-h-0 flex flex-col pt-4">
+      <CardContent className="flex-1 min-h-0 flex flex-col">
         <div className="flex-1 min-h-0 relative">
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart data={data}>
