@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+
+When writing plans in Plan Mode, always include a testing strategy for both unit testing and integration testing. Use vitest. Make sure testing strategy covers all files that are about to be implemented in the plan.
